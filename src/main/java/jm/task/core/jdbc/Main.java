@@ -11,6 +11,6 @@ import java.sql.SQLException;
 public class Main {
     public static void main(String[] args) {
         // реализуйте алгоритм здесь
-        new UserDaoJDBCImpl().cleanUsersTable();
+        new UserDaoJDBCImpl().removeUserById(6);
     }
 }
