@@ -18,6 +18,14 @@ public class UserDaoJDBCImpl implements UserDao {
                 "  `lastname` VARCHAR(45) NULL,\n" +
                 "  `age` INT NULL,\n" +
                 "  PRIMARY KEY (`id`));";
+        try {
+            new Util().getConnectionFromDataBase(SQL);
+            System.out.println("Таблица пользователей успешно создана...");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
 
     }
 
