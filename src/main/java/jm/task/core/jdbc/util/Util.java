@@ -20,7 +20,7 @@ public class Util {
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 
 
-    public ResultSet getConnectionFromDataBase(String query) throws ClassNotFoundException, SQLException {
+    public ResultSet getConnectionFromDataBase(String query) {
         connection = null;
         statement = null;
 
@@ -34,13 +34,14 @@ public class Util {
             System.out.println("Создаю подключение к базе данных...");
             connection = (Connection) DriverManager.getConnection(url, user, pass);
 
-            //System.out.println("Начинаю удаление таблицы из БД...");
             statement = (Statement) connection.createStatement();
             statement.executeUpdate(query);
 
 
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         } finally {
             try {
                 if (statement != null)
