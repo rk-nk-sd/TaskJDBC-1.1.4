@@ -15,7 +15,6 @@ public class Util {
 
     private static Connection connection;
     private static Statement statement;
-    //private static ResultSet resultSet;
 
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 
@@ -35,22 +34,12 @@ public class Util {
             connection = (Connection) DriverManager.getConnection(url, user, pass);
 
             statement = (Statement) connection.createStatement();
-            //statement.executeUpdate(query);
-
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-        } finally {
-//            try {
-//                if (statement != null)
-//                    statement.close();
-//                if (connection != null)
-//                connection.close();
-//            } catch(SQLException se) {  }
         }
         return statement;
-        //return null;
     }
 }
