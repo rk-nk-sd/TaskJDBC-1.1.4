@@ -20,7 +20,7 @@ public class UserDaoJDBCImpl implements UserDao {
                 "  `id` INT NOT NULL AUTO_INCREMENT,\n" +
                 "  `name` VARCHAR(45) NULL,\n" +
                 "  `lastname` VARCHAR(45) NULL,\n" +
-                "  `age` INT NULL,\n" +
+                "  `age` TINYINT NULL,\n" +
                 "  PRIMARY KEY (`id`));";
         Statement statement = new Util().getConnectionFromDataBase();
         try {
