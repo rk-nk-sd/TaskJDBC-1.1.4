@@ -27,12 +27,9 @@ public class Util {
             /**
              * Открываем соединение с БД
              */
-            System.out.println("Регистрирую JDBC драйвер...");
             Class.forName(JDBC_DRIVER);
 
-            System.out.println("Создаю подключение к базе данных...");
             connection = (Connection) DriverManager.getConnection(url, user, pass);
-
             statement = (Statement) connection.createStatement();
 
         } catch (ClassNotFoundException e) {

@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 public class UserDaoJDBCImpl implements UserDao {
     private static final String table = "new_table";
@@ -17,7 +16,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void createUsersTable() {
-        String SQL = "CREATE TABLE `jmDatabase`.`" + table + "` (\n" +
+        String SQL = "CREATE TABLE IF NOT EXISTS `jmDatabase`.`" + table + "` (\n" +
                 "  `id` INT NOT NULL AUTO_INCREMENT,\n" +
                 "  `name` VARCHAR(45) NULL,\n" +
                 "  `lastname` VARCHAR(45) NULL,\n" +
@@ -29,20 +28,16 @@ public class UserDaoJDBCImpl implements UserDao {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        System.out.println("Таблица пользователей успешно создана...");
-
     }
 
     public void dropUsersTable() {
-        String SQL = "DROP TABLE " + table;
+        String SQL = "DROP TABLE IF EXISTS " + table;
         Statement statement = new Util().getConnectionFromDataBase();
         try {
             statement.executeUpdate(SQL);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        System.out.println("Таблица пользователей успешно удалена из БД...");
-
     }
 
     public void saveUser(String name, String lastName, byte age) {
@@ -53,7 +48,6 @@ public class UserDaoJDBCImpl implements UserDao {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        System.out.println("Данные пользователя успешно сохранены в БД...");
     }
 
     public void removeUserById(long id) {
@@ -64,16 +58,18 @@ public class UserDaoJDBCImpl implements UserDao {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        System.out.println("Данные пользователя успешно удалены из БД...");
     }
 
+    /**
+     * Возвращает список пользователей вида List<User>
+     * @return
+     */
     public List<User> getAllUsers() {
         String SQL = "SELECT * FROM " + table;
-        Statement statement = new Util().getConnectionFromDataBase();
         List<User> listUsers = new ArrayList<User>();
 
         try {
-            ResultSet resultSet = statement.executeQuery(SQL);
+            ResultSet resultSet = new Util().getConnectionFromDataBase().executeQuery(SQL);
             while (resultSet.next()) {
                 int i = resultSet.getInt("id");
                 String name = resultSet.getString("name");
@@ -89,6 +85,9 @@ public class UserDaoJDBCImpl implements UserDao {
         return listUsers;
     }
 
+    /**
+     * Очистка таблицы пользователей
+     */
     public void cleanUsersTable() {
         String SQL = "TRUNCATE TABLE " + table;
         Statement statement = new Util().getConnectionFromDataBase();
@@ -97,7 +96,5 @@ public class UserDaoJDBCImpl implements UserDao {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        System.out.println("Таблица успешно очищена, ее структура не затронута...");
-
     }
 }
