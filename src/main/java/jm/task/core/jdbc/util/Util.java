@@ -1,5 +1,12 @@
 package jm.task.core.jdbc.util;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.service.ServiceRegistry;
+
+
 import java.sql.*;
 
 
@@ -17,6 +24,36 @@ public class Util {
     private static Statement statement;
 
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+
+    // Для Hibernet
+    private static SessionFactory sessionFactory;
+    private static ServiceRegistry serviceRegistry;
+    static {
+        try {
+            Configuration configuration = getConfig();
+            serviceRegistry = new StandardServiceRegistryBuilder().applySettings(
+                    configuration.getProperties()).build();
+            sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+        }
+    }
+    public static Configuration getConfig() {
+        Configuration configuration = new Configuration()
+                .setProperty("hibernate.connection.driver_class", JDBC_DRIVER)
+                .setProperty("hibernate.connection.url", url)
+                .setProperty("hibernate.connection.username", user)
+                .setProperty("hibernate.connection.password", pass)
+                //.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect")
+                .setProperty("hibernate.show_sql", "true")
+                .setProperty("hibernate.current_session_context_class", "thread")
+                .addAnnotatedClass(jm.task.core.jdbc.model.User.class);
+        return configuration;
+    }
+    public static Session getSession () {
+        return sessionFactory.openSession();
+    }
+    //конец блока Hibernet
 
 
     public Statement getConnectionFromDataBase() {
