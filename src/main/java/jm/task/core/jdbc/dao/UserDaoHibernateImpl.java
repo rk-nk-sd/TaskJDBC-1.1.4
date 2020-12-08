@@ -16,50 +16,95 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void createUsersTable() {
-        Session session = Util.getSession();
-        session.getTransaction();
+        try {
+            Session session = Util.getSession();
+            Transaction transaction = session.beginTransaction();
+            String sql = "CREATE TABLE IF NOT EXISTS `jmDatabase`.`new_table` (\n" +
+                    "  `id` INT NOT NULL AUTO_INCREMENT,\n" +
+                    "  `name` VARCHAR(45) NULL,\n" +
+                    "  `lastname` VARCHAR(45) NULL,\n" +
+                    "  `age` TINYINT NULL,\n" +
+                    "  PRIMARY KEY (`id`));";
+            session.createSQLQuery(sql).executeUpdate();
+            transaction.commit();
+            session.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void dropUsersTable() {
-
+        try {
+            Session session = Util.getSession();
+            Transaction transaction = session.beginTransaction();
+            String sql = "DROP TABLE IF EXISTS new_table";
+            session.createSQLQuery(sql).executeUpdate();
+            transaction.commit();
+            session.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
-        Session session = Util.getSession();
-        Transaction transaction = session.beginTransaction();
-        String hql = "INSERT INTO User(name, lastName, age) VALUES ('" + name + "', '" + lastName + "', '" + age + "')";
-        session.createQuery (hql).executeUpdate();
-        transaction.commit();
+        User user = new User();
+        user.setName(name);
+        user.setLastName(lastName);
+        user.setAge(age);
+
+        try {
+            Session session = Util.getSession();
+            Transaction transaction = session.beginTransaction();
+            session.save(user);
+            transaction.commit();
+            session.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void removeUserById(long id) {
-        Session session = Util.getSession();
-        Transaction transaction = session.beginTransaction();
-        String hql = "DELETE User WHERE id = :id";
-        Query query = session.createQuery(hql);
-        query.setParameter("id", id);
-        query.executeUpdate();
-        transaction.commit();
+        try {
+            Session session = Util.getSession();
+            Transaction transaction = session.beginTransaction();
+            String hql = "DELETE User WHERE id = :id";
+            Query query = session.createQuery(hql);
+            query.setParameter("id", id);
+            query.executeUpdate();
+            transaction.commit();
+            session.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public List<User> getAllUsers() {
-        Session session = Util.getSession();
-//        String query = "SELECT * FROM new_table";
-//        List<User> user = (List<User>) session.createSQLQuery(query).addEntity(User.class).list();
-        List<User> user = session.createQuery("From User").list();
+        List<User> user = null;
+        try {
+            Session session = Util.getSession();
+            user = session.createQuery("From User").list();
+            session.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return user;
     }
 
     @Override
     public void cleanUsersTable() {
-        Session session = Util.getSession();
-        Transaction transaction = session.beginTransaction();
-        String hql = "DELETE FROM User";
-        session.createQuery(hql).executeUpdate();
-        transaction.commit();
+        try {
+            Session session = Util.getSession();
+            Transaction transaction = session.beginTransaction();
+            String hql = "DELETE FROM User";
+            session.createQuery(hql).executeUpdate();
+            transaction.commit();
+            session.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
