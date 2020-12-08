@@ -1,5 +1,6 @@
 package jm.task.core.jdbc.util;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -31,11 +32,12 @@ public class Util {
     static {
         try {
             Configuration configuration = getConfig();
+            //configuration.configure();
             serviceRegistry = new StandardServiceRegistryBuilder().applySettings(
                     configuration.getProperties()).build();
             sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-        } catch (RuntimeException re) {
-            re.printStackTrace();
+        } catch (HibernateException he) {
+            he.printStackTrace();
         }
     }
     public static Configuration getConfig() {
@@ -44,8 +46,9 @@ public class Util {
                 .setProperty("hibernate.connection.url", url)
                 .setProperty("hibernate.connection.username", user)
                 .setProperty("hibernate.connection.password", pass)
-                //.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect")
+                .setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect")
                 .setProperty("hibernate.show_sql", "true")
+                .setProperty("hibernate.hbm2ddl.auto", "update")
                 .setProperty("hibernate.current_session_context_class", "thread")
                 .addAnnotatedClass(jm.task.core.jdbc.model.User.class);
         return configuration;
